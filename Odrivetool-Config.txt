@@ -1,0 +1,68 @@
+###该配置基于6.5寸、DC36V、15 对极、功率  250W - 350 W###
+
+###                 注意：                    ###
+###  以下指令需要一行一行输入，不能一次输入多行!!!  ###
+
+#恢复默认值
+odrv0.erase_configuration() 
+
+#主板参数配置
+odrv0.config.brake_resistance = 2.0					#配置耗散电阻(如果有)
+odrv0.config.dc_bus_undervoltage_trip_level = 8.0				#配置低压保护阈值
+odrv0.config.dc_bus_overvoltage_trip_level = 56.0				#配置过压保护阈值
+#odrv0.config.dc_max_positive_current = 30.0				#配置过流保护阈值	
+odrv0.config.dc_max_negative_current = -3.0				#配置反向过流保护阈值
+odrv0.config.max_regen_current = 0					#配置回充电流值
+odrv0.save_configuration()
+
+#电机参数配置
+odrv0.axis0.motor.config.pole_pairs = 7					#配置极对数
+odrv0.axis0.motor.config.calibration_current = 5				#配置电机校准时的电流
+odrv0.axis0.motor.config.resistance_calib_max_voltage = 2			#配置电机校准时的电压
+odrv0.axis0.motor.config.motor_type = MOTOR_TYPE_HIGH_CURRENT		#配置为大电流电机
+odrv0.axis0.motor.config.current_lim = 15					#配置电机运行的最大电流限制
+odrv0.axis0.motor.config.requested_current_range = 20			#配置电机电流采样范围
+odrv0.save_configuration()
+
+#编码器参数配置
+odrv0.axis0.encoder.config.mode = ENCODER_MODE_INCREMENTAL      #配置电机编码器类型为增量式编码器。
+odrv0.axis0.encoder.config.cpr = 16384                  #配置编码器分辨率        编码器分辨率 = 每圈步数4 = 40964 = 16384
+odrv0.axis0.encoder.config.bandwidth = 3000             #配置编码带宽
+odrv0.axis0.config.calibration_lockin.current = 5       #配置编码器校准时电机运行电流 
+odrv0.axis0.config.calibration_lockin.ramp_time = 0.4   #配置编码器校准时电流上升时间
+odrv0.axis0.config.calibration_lockin.ramp_distance = 3.1415927410125732    #配置电流上升时电机转动距离
+odrv0.axis0.config.calibration_lockin.accel = 20        #配置编码器校准时电机加速度
+odrv0.axis0.config.calibration_lockin.vel = 40          #配置编码器校准时电机速度
+odrv0.save_configuration()
+
+
+#控制器参数配置
+odrv0.axis0.controller.config.control_mode = CONTROL_MODE_POSITION_CONTROL	#位置环控制模式
+odrv0.axis0.controller.config.vel_limit = 50						#电机最大转速
+odrv0.axis0.controller.config.pos_gain = 30						#位置环增益，如果电机抖动可以适当调整该值
+odrv0.axis0.controller.config.vel_gain = 0.02					#速度环增益（在位置环可不配置）
+odrv0.axis0.controller.config.vel_integrator_gain = 0.2				#速度环增益
+odrv0.axis0.controller.config.input_mode = INPUT_MODE_TRAP_TRAJ			#配置为梯形轨迹模式
+odrv0.axis0.trap_traj.config.vel_limit = 30						#配置梯形模式电机最大转速
+odrv0.axis0.trap_traj.config.accel_limit = 5
+odrv0.axis0.trap_traj.config.decel_limit = 5
+odrv0.save_configuration()
+odrv0.reboot()
+
+#测试参数配置
+odrv0.axis0.requested_state = AXIS_STATE_MOTOR_CALIBRATION			#电机校准
+odrv0.axis0.motor.config.pre_calibrated = True		
+odrv0.axis0.requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION		#编码器校准
+#odrv0.axis0.config.startup_encoder_offset_calibration = True
+odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL			#进入闭环
+odrv0.axis0.config.startup_closed_loop_control = True
+odrv0.save_configuration()
+odrv0.reboot()
+
+#CAN配置
+odrv0.axis0.config.can_node_id = 0x010      #配置 Axis0 的 CAN Node ID 为 2
+odrv0.can.set_baud_rate(250000)             #配置 CAN 通讯波特率。
+odrv0.save_configuration()
+odrv0.reboot()
+
+
