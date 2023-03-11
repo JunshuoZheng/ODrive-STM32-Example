@@ -25,7 +25,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_can.h"
-#include "CAN_receive.h"
 #include "ODrive.h"
 /* USER CODE END Includes */
 
