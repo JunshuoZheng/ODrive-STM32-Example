@@ -452,19 +452,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>applications</GroupName>
-          <Files>
-            <File>
-              <FileName>CAN_receive.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\application\CAN_receive.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>::CMSIS</GroupName>
-        </Group>
-        <Group>
           <GroupName>Drivers/STM32F4xx_HAL_Driver</GroupName>
           <GroupOption>
             <CommonProperty>
@@ -1433,6 +1420,9 @@
               </FileOption>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>

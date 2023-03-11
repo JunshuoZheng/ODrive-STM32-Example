@@ -121,8 +121,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-        CAN_cmd_chassis(4000, 4000, 4000, 4000);
-        HAL_Delay(2);
+
   }
   /* USER CODE END 3 */
 }
