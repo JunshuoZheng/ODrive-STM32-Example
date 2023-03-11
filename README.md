@@ -1,6 +1,6 @@
-# Odrive-STM32-Test
+# Odrive-STM32-Example
 
-STM32 controls odrive via CAN
+STM32 controls ODrive via CAN
 
 ## Hardware
 - Robomaster-Development-Board-A
@@ -17,4 +17,4 @@ STM32 controls odrive via CAN
 ## Reference
 [siddarthiyer/ODrive-STM32-CAN-Driver](https://github.com/siddarthiyer/ODrive-STM32-CAN-Driver)
 
-[创客基地Odrive教程](https://blog.csdn.net/gjy_skyblue/category_10813011.html)
+[鍒涘鍩哄湴ODrive鏁欑▼](https://blog.csdn.net/gjy_skyblue/category_10813011.html)
