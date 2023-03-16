@@ -46,7 +46,6 @@ typedef struct Axis
 	uint32_t AXIS_Error;
 	uint8_t AXIS_Current_State;
 	uint8_t Controller_Status;
-	CAN_TypeDef *CAN_INSTANCE;
 }Axis;
 
 //Axis States

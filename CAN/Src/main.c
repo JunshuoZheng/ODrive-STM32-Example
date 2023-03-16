@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "can.h"
 #include "gpio.h"
 
@@ -35,8 +36,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-Axis AXIS0; // Declare Axis Struct Instance
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,11 +46,12 @@ Axis AXIS0; // Declare Axis Struct Instance
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+Axis AXIS0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 void CAN1_RX0_IRQHandler(void);
@@ -94,25 +94,16 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   /* USER CODE BEGIN 2 */
-	
-	//Init Axis Id and CAN Instance
-  AXIS0.AXIS_ID = 0x010;
-  AXIS0.CAN_INSTANCE = CAN1;
-
-
-  //Initialize CAN
-	CAN_Filter_Init();
-  HAL_Delay(100);
-
-  //Example Code
-  Set_Controller_Modes(AXIS0, VELOCITY_CONTROL, PASSTHROUGH);
-  Set_Axis_Requested_State(AXIS0, CLOSED_LOOP_CONTROL);
-  Set_Input_Vel(AXIS0, 2, 0);
-  HAL_Delay(1000);
-  Set_Input_Vel(AXIS0, 0, 0);
-	
+	CAN_Filter_Init();  //Initialize CAN	
   /* USER CODE END 2 */
 
+  /* Call init function for freertos objects (in freertos.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -177,6 +168,27 @@ void CAN1_RX0_IRQHandler(void){
 	ODrive_RX_CallBack(&AXIS0);
 }
 /* USER CODE END 4 */
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM14 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM14) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
