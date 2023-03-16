@@ -1,18 +1,21 @@
-# Odrive-STM32-Example
+# Odrive-STM32-CAN-Example
 
-STM32 controls ODrive via CAN
+Control ODrive with STM32 via CAN
+
+- Use STM32 CubeMX.
+- Support multi-axises.
+- Good readability and Easy to modify.
 
 ## Hardware
-- Robomaster-Development-Board-A
-- Odrive v3.6-56V (from makerbase)
-  - Firmware: v0.5.1 (from makerbase QQ Group)
+- STM32F4
+- Odrive v3.6
 
-## Usage
-1. Install Odrivetool version 0.5.1.post0. If you use Anaconda, you can use `odrive-env.yaml` with `conda env create -f odrive-env.yaml`
-2. Config odrive by odrivetool. To config odrive, please reference `Odrivetool-Config.txt`
-3. Programming STM32
-4. Connect hardware
-5. Enjoy
+## Validated Versions
+This combo of hardware and firmware is validated.
+  - Robomaster-Development-Board-A
+  - ODrive Hardware: v3.6-56V
+  - ODrive Firmware: v0.5.1
+  - Odrivetool: 0.5.1.post0. NOTICE: For ODrivev3.6, high Odrivetool version may cause error.
 
 ## Reference
 [siddarthiyer/ODrive-STM32-CAN-Driver](https://github.com/siddarthiyer/ODrive-STM32-CAN-Driver)

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.md": "markdown",
+        "can_odrive.h": "c"
+    }
+}

@@ -1,3 +1,10 @@
+/*
+ * ODrive.h
+ *
+ *  Created on: 07-Jul-2022
+ *      Author: sidiyer27
+ */
+
 #ifndef ODRIVE_ODRIVE_H_
 #define ODRIVE_ODRIVE_H_
 
@@ -23,7 +30,7 @@
 #define SET_POSITION_GAIN				0x01A
 #define SET_VEL_GAINS					0x01B
 
-//ï¿½ï¿½ï¿½ï¿½ODrive CAN ID
+//ÉèÖÃODrive CAN ID
 typedef enum
 {
     CAN_ODRIVE_M1_ID = 0x10,
@@ -34,58 +41,58 @@ typedef enum
 } can_odr_id_e;
 
 //Axis Parameters
-typedef struct axis_t
+typedef struct Axis
 {
-    int AXIS_ID;
-    float AXIS_Encoder_Pos;
-    float AXIS_Encoder_Vel;
-    int32_t AXIS_Encoder_CPR;
-    int32_t AXIS_Encoder_Shadow;
-    float AXIS_Bus_Voltage;
-    float AXIS_Bus_Current;
-    float AXIS_Iq_Setpoint;
-    float AXIS_Iq_Measured;
-    uint32_t AXIS_Error;
-    uint8_t AXIS_Current_State;
-    uint8_t Controller_Status;
-} axis_t;
+	int AXIS_ID;
+	float AXIS_Encoder_Pos;
+	float AXIS_Encoder_Vel;
+	int32_t AXIS_Encoder_CPR;
+	int32_t AXIS_Encoder_Shadow;
+	float AXIS_Bus_Voltage;
+	float AXIS_Bus_Current;
+	float AXIS_Iq_Setpoint;
+	float AXIS_Iq_Measured;
+	uint32_t AXIS_Error;
+	uint8_t AXIS_Current_State;
+	uint8_t Controller_Status;
+}Axis;
 
 //Axis States
-typedef enum {
-    UNDEFINED = 0x0,
-    IDLE = 0x1,
-    STARTUP_SEQUENCE = 0x2,
-    FULL_CALIBRATION_SEQUENCE = 0x3,
-    MOTOR_CALIBRATION = 0x4,
-    ENCODER_INDEX_SEARCH = 0x6,
-    ENCODER_OFFSET_CALIBRATION = 0x7,
-    CLOSED_LOOP_CONTROL = 0x8,
-    LOCKIN_SPIN = 0x9,
-    ENCODER_DIR_FIND = 0xA,
-    HOMING = 0xB,
-    ENCODER_HALL_POLARITY_CALIBRATION = 0xC,
-    ENCODER_HALL_PHASE_CALIBRATION = 0xD
+typedef enum{
+	UNDEFINED = 0x0,
+	IDLE = 0x1,
+	STARTUP_SEQUENCE = 0x2,
+	FULL_CALIBRATION_SEQUENCE = 0x3,
+	MOTOR_CALIBRATION = 0x4,
+	ENCODER_INDEX_SEARCH = 0x6,
+	ENCODER_OFFSET_CALIBRATION = 0x7,
+	CLOSED_LOOP_CONTROL = 0x8,
+	LOCKIN_SPIN = 0x9,
+	ENCODER_DIR_FIND = 0xA,
+	HOMING = 0xB,
+	ENCODER_HALL_POLARITY_CALIBRATION = 0xC,
+	ENCODER_HALL_PHASE_CALIBRATION = 0xD
 } Axis_State;
 
 //Control Modes
-typedef enum {
-    VOLTAGE_CONTROL = 0x0,
-    TORQUE_CONTROL = 0x1,
-    VELOCITY_CONTROL = 0x2,
-    POSITION_CONTROL = 0x3
+typedef enum{
+	VOLTAGE_CONTROL = 0x0,
+	TORQUE_CONTROL = 0x1,
+	VELOCITY_CONTROL = 0x2,
+	POSITION_CONTROL = 0x3
 } Control_Mode;
 
 //Input Modes
-typedef enum {
-    INACTIVE = 0x0,
-    PASSTHROUGH = 0x1,
-    VEL_RAMP = 0x2,
-    POS_FILTER = 0x3,
-    MIX_CHANNELS = 0x4,
-    TRAP_TRAJ = 0x5,
-    TORQUE_RAMP = 0x6,
-    MIRROR = 0x7,
-    TUNING = 0x8
+typedef enum{
+	INACTIVE = 0x0,
+	PASSTHROUGH = 0x1,
+	VEL_RAMP = 0x2,
+	POS_FILTER = 0x3,
+	MIX_CHANNELS = 0x4,
+	TRAP_TRAJ = 0x5,
+	TORQUE_RAMP = 0x6,
+	MIRROR = 0x7,
+	TUNING = 0x8
 } Input_Mode;
 
 
@@ -124,7 +131,7 @@ void CAN_Setup(CAN_TypeDef *CAN_INSTANCE, int32_t baudrate);
  * 				  to change state or perform certain routines. List of Axis States listed above.
  */
 
-void Set_Axis_Requested_State(axis_t Axis, Axis_State state);
+void Set_Axis_Requested_State(Axis Axis, Axis_State state);
 
 
 
@@ -146,7 +153,7 @@ void Set_Axis_Requested_State(axis_t Axis, Axis_State state);
  * 				  velocity of the axis and the the feed-forward torque of the torque controller
  */
 
-void Set_Input_Vel(axis_t Axis, float vel, float torqueff);
+void Set_Input_Vel(Axis Axis, float vel, float torqueff);
 
 
 
@@ -190,7 +197,7 @@ void Set_TX_Param(int AXIS_ID, int COMMAND_ID, int id_type, int frame_type, int 
  * 				  the errors of this device including all contained submodules.
  */
 
-void Clear_Errors(axis_t Axis);
+void Clear_Errors(Axis Axis);
 
 
 
@@ -208,7 +215,7 @@ void Clear_Errors(axis_t Axis);
  * 				  Message can be sent to either address on a given ODrive board.
  */
 
-void Reboot_ODrive(axis_t AXIS_ID);
+void Reboot_ODrive(Axis AXIS_ID);
 
 
 
@@ -230,7 +237,7 @@ void Reboot_ODrive(axis_t AXIS_ID);
  * 				  set the Control Mode and Input Mode of given axis
  */
 
-void Set_Controller_Modes(axis_t Axis, Control_Mode ControlMode, Input_Mode InputMode);
+void Set_Controller_Modes(Axis Axis, Control_Mode ControlMode, Input_Mode InputMode);
 
 
 
@@ -256,7 +263,7 @@ void Set_Controller_Modes(axis_t Axis, Control_Mode ControlMode, Input_Mode Inpu
  * 				  and feed-forward torque
  */
 
-void Set_Input_Pos(axis_t Axis, float Input_Pos, int Vel_FF, int Torque_FF);
+void Set_Input_Pos(Axis Axis, float Input_Pos, int Vel_FF, int Torque_FF);
 
 
 
@@ -275,7 +282,7 @@ void Set_Input_Pos(axis_t Axis, float Input_Pos, int Vel_FF, int Torque_FF);
  *
  */
 
-void Get_Encoder_Count(axis_t Axis);
+void Get_Encoder_Count(Axis Axis);
 
 
 
@@ -294,7 +301,7 @@ void Get_Encoder_Count(axis_t Axis);
  * 				  the desired torque of the axis.
  */
 
-void Set_Input_Torque(axis_t Axis, float torque);
+void Set_Input_Torque(Axis Axis, float torque);
 
 
 
@@ -312,7 +319,7 @@ void Set_Input_Torque(axis_t Axis, float torque);
  *
  */
 
-void Get_Bus_Voltage_Current(axis_t Axis);
+void Get_Bus_Voltage_Current(Axis Axis);
 
 
 
@@ -330,7 +337,7 @@ void Get_Bus_Voltage_Current(axis_t Axis);
  *
  */
 
-void Get_IQ(axis_t Axis);
+void Get_IQ(Axis Axis);
 
 
 
@@ -349,7 +356,7 @@ void Get_IQ(axis_t Axis);
  * 				  the desired position gain
  */
 
-void Set_Position_Gain(axis_t Axis, float pos_gain);
+void Set_Position_Gain(Axis Axis, float pos_gain);
 
 
 
@@ -371,7 +378,7 @@ void Set_Position_Gain(axis_t Axis, float pos_gain);
  * 				  the desired velocity gain and velocity integrator gain
  */
 
-void Set_Vel_Gains(axis_t Axis, float Vel_Gain, float Vel_Int_Gain);
+void Set_Vel_Gains(Axis Axis, float Vel_Gain, float Vel_Int_Gain);
 
 
 
@@ -390,7 +397,7 @@ void Set_Vel_Gains(axis_t Axis, float Vel_Gain, float Vel_Int_Gain);
  * 				  the given axis' Node Id
  */
 
-void Set_Axis_Node_ID(axis_t Axis, uint32_t node_id);
+void Set_Axis_Node_ID(Axis Axis, uint32_t node_id);
 
 
 
@@ -412,7 +419,7 @@ void Set_Axis_Node_ID(axis_t Axis, uint32_t node_id);
  * 				  the given axis' Node Id
  */
 
-void Set_Limits(axis_t Axis, float vel_lim, float curr_lim);
+void Set_Limits(Axis Axis, float vel_lim, float curr_lim);
 
 
 
@@ -430,7 +437,7 @@ void Set_Limits(axis_t Axis, float vel_lim, float curr_lim);
  * 				  to update the required variables in the Axis struct.
  */
 
-void ODrive_RX_CallBack(axis_t *AXIS);
+void ODrive_RX_CallBack(Axis *AXIS);
 
 
 

@@ -1,11 +1,3 @@
-/*
- * ODrive.c
- *
- *  Created on: 07-Jul-2022
- *      Author: sidiyer27
- */
-
-
 #include "can_odrive.h"
 
 CAN_TX_Typedef TX;
@@ -15,6 +7,7 @@ extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 
 
+
 void Set_TX_Param(int AXIS_ID, int COMMAND_ID, int id_type, int frame_type, int data_length) {
     TX.ID = (AXIS_ID << 5) | COMMAND_ID;
     TX.id_type = id_type;
@@ -22,7 +15,7 @@ void Set_TX_Param(int AXIS_ID, int COMMAND_ID, int id_type, int frame_type, int 
     TX.data_length = data_length;
 }
 
-void Set_Axis_Requested_State(Axis Axis, Axis_State state) {
+void Set_Axis_Requested_State(axis_t Axis, Axis_State state) {
     Set_TX_Param(Axis.AXIS_ID, SET_AXIS_REQUESTED_STATE, CAN_ID_Standard, CAN_Frame_Data, 4);
     unsigned int Requested_State = state;
     uint8_t *ptrToFloat;
@@ -34,7 +27,7 @@ void Set_Axis_Requested_State(Axis Axis, Axis_State state) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Input_Vel(Axis Axis, float vel, float torqueff) {
+void Set_Input_Vel(axis_t Axis, float vel, float torqueff) {
     Set_TX_Param(Axis.AXIS_ID, SET_INPUT_VEL, CAN_ID_Standard, CAN_Frame_Data, 8);
     uint8_t *ptrVel;
     ptrVel = (uint8_t *)&vel;
@@ -51,17 +44,17 @@ void Set_Input_Vel(Axis Axis, float vel, float torqueff) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Clear_Errors(Axis Axis) {
+void Clear_Errors(axis_t Axis) {
     Set_TX_Param(Axis.AXIS_ID, CLEAR_ERRORS, CAN_ID_Standard, CAN_Frame_Data, 0);
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Reboot_ODrive(Axis Axis) {
+void Reboot_ODrive(axis_t Axis) {
     Set_TX_Param(Axis.AXIS_ID, REBOOT_ODRIVE, CAN_ID_Standard, CAN_Frame_Data, 0);
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Controller_Modes(Axis Axis, Control_Mode ControlMode, Input_Mode InputMode) {
+void Set_Controller_Modes(axis_t Axis, Control_Mode ControlMode, Input_Mode InputMode) {
     Set_TX_Param(Axis.AXIS_ID, SET_CONTROLLER_MODES, CAN_ID_Standard, CAN_Frame_Data, 8);
     int Control = ControlMode;
     int Input = InputMode;
@@ -80,7 +73,7 @@ void Set_Controller_Modes(Axis Axis, Control_Mode ControlMode, Input_Mode InputM
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Input_Pos(Axis Axis, float Input_Pos, int Vel_FF, int Torque_FF) {
+void Set_Input_Pos(axis_t Axis, float Input_Pos, int Vel_FF, int Torque_FF) {
     Set_TX_Param(Axis.AXIS_ID, SET_INPUT_POS, CAN_ID_Standard, CAN_Frame_Data, 8);
     uint8_t *ptrPos;
     ptrPos = (uint8_t *)&Input_Pos;
@@ -99,12 +92,12 @@ void Set_Input_Pos(Axis Axis, float Input_Pos, int Vel_FF, int Torque_FF) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Get_Encoder_Count(Axis Axis) {
+void Get_Encoder_Count(axis_t Axis) {
     Set_TX_Param(Axis.AXIS_ID, GET_ENCODER_COUNT, CAN_ID_Standard, CAN_Frame_Remote, 0);
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Input_Torque(Axis Axis, float torque) {
+void Set_Input_Torque(axis_t Axis, float torque) {
     Set_TX_Param(Axis.AXIS_ID, SET_INPUT_TORQUE, CAN_ID_Standard, CAN_Frame_Data, 4);
     uint8_t *ptrTor;
     ptrTor = (uint8_t *)&torque;
@@ -115,17 +108,17 @@ void Set_Input_Torque(Axis Axis, float torque) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Get_Bus_Voltage_Current(Axis Axis) {
+void Get_Bus_Voltage_Current(axis_t Axis) {
     Set_TX_Param(Axis.AXIS_ID, GET_BUS_VOLTAGE_CURRENT, CAN_ID_Standard, CAN_Frame_Remote, 0);
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Get_IQ(Axis Axis) {
+void Get_IQ(axis_t Axis) {
     Set_TX_Param(Axis.AXIS_ID, GET_IQ, CAN_ID_Standard, CAN_Frame_Remote, 0);
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Position_Gain(Axis Axis, float pos_gain) {
+void Set_Position_Gain(axis_t Axis, float pos_gain) {
     Set_TX_Param(Axis.AXIS_ID, SET_POSITION_GAIN, CAN_ID_Standard, CAN_Frame_Data, 4);
     uint8_t *ptrPos;
     ptrPos = (uint8_t *)&pos_gain;
@@ -136,7 +129,7 @@ void Set_Position_Gain(Axis Axis, float pos_gain) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Vel_Gains(Axis Axis, float Vel_Gain, float Vel_Int_Gain) {
+void Set_Vel_Gains(axis_t Axis, float Vel_Gain, float Vel_Int_Gain) {
     Set_TX_Param(Axis.AXIS_ID, SET_VEL_GAINS, CAN_ID_Standard, CAN_Frame_Data, 8);
     uint8_t *ptrVelGain;
     ptrVelGain = (uint8_t *)&Vel_Gain;
@@ -153,7 +146,7 @@ void Set_Vel_Gains(Axis Axis, float Vel_Gain, float Vel_Int_Gain) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Axis_Node_ID(Axis Axis, uint32_t node_id) {
+void Set_Axis_Node_ID(axis_t Axis, uint32_t node_id) {
     Set_TX_Param(Axis.AXIS_ID, SET_AXIS_NODE_ID, CAN_ID_Standard, CAN_Frame_Data, 4);
     uint8_t *ptrNodeId;
     ptrNodeId = (uint8_t *)&node_id;
@@ -164,7 +157,7 @@ void Set_Axis_Node_ID(Axis Axis, uint32_t node_id) {
     CAN_Send_Packet(&hcan1, &TX);
 }
 
-void Set_Limits(Axis Axis, float vel_lim, float curr_lim) {
+void Set_Limits(axis_t Axis, float vel_lim, float curr_lim) {
     Set_TX_Param(Axis.AXIS_ID, SET_LIMITS, CAN_ID_Standard, CAN_Frame_Data, 8);
     uint8_t *ptrVelLim;
     ptrVelLim = (uint8_t *)&vel_lim;
@@ -182,7 +175,7 @@ void Set_Limits(Axis Axis, float vel_lim, float curr_lim) {
 
 }
 
-void ODrive_RX_CallBack(Axis *AXIS) {
+void ODrive_RX_CallBack(axis_t *AXIS) {
     int32_t ID = 0;
     CAN_Get_Packet(&hcan1, &RX);
     ID = RX.ID;

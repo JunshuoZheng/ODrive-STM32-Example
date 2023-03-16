@@ -46,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-Axis odrive_axis[4]; 
+axis_t odrive_axis[4]; 
 
 /* USER CODE END PV */
 
