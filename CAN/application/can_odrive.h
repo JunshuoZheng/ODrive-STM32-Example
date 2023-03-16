@@ -30,6 +30,15 @@
 #define SET_POSITION_GAIN				0x01A
 #define SET_VEL_GAINS					0x01B
 
+//…Ë÷√ODrive CAN ID
+typedef enum
+{
+    CAN_ODRIVE_M1_ID = 0x10,
+    CAN_ODRIVE_M2_ID = 0x11,
+    CAN_ODRIVE_M3_ID = 0x12,
+    CAN_ODRIVE_M4_ID = 0x13,
+
+} can_odr_id_e;
 
 //Axis Parameters
 typedef struct Axis
