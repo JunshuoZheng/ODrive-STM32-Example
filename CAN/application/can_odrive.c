@@ -6,7 +6,7 @@
  */
 
 
-#include "ODrive.h"
+#include "can_odrive.h"
 
 CAN_TX_Typedef TX;
 CAN_RX_Typedef RX;

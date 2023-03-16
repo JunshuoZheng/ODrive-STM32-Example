@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../application;../bsp/boards;../bsp/ODrive</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../application;..\bsp</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -437,17 +437,7 @@
             <File>
               <FileName>bsp_can.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bsp\boards\bsp_can.c</FilePath>
-            </File>
-            <File>
-              <FileName>ODrive.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bsp\ODrive\ODrive.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_GPIO.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bsp\boards\bsp_GPIO.c</FilePath>
+              <FilePath>..\bsp\bsp_can.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1418,6 +1408,16 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Application</GroupName>
+          <Files>
+            <File>
+              <FileName>can_odrive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\can_odrive.c</FilePath>
             </File>
           </Files>
         </Group>

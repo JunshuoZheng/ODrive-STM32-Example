@@ -2,7 +2,6 @@
 #define BSP_CAN_H
 #include "struct_typedef.h"
 #include "CAN_defines.h"
-#include "bsp_GPIO.h"
 
 
 #define Transmit_Mailbox_Empty	CAN_IER_TMEIE
