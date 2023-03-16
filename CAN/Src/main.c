@@ -101,7 +101,7 @@ int main(void)
 
 
   //Initialize CAN
-  CAN_Setup(CAN1, CAN_BAUDRATE_250_KBPS);
+	CAN_Filter_Init();
   HAL_Delay(100);
 
   //Example Code

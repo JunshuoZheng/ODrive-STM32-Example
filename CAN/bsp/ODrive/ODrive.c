@@ -10,26 +10,10 @@
 
 CAN_TX_Typedef TX;
 CAN_RX_Typedef RX;
-CAN_Filter_TypeDef filter;
-CAN_Init_Typedef CAN;
 
+extern CAN_HandleTypeDef hcan1;
+extern CAN_HandleTypeDef hcan2;
 
-void CAN_Setup(CAN_TypeDef *CAN_INSTANCE, int32_t baudrate) {
-    CAN.CAN_INSTANCE = CAN_INSTANCE;
-    CAN.baudrate = baudrate;
-    CAN.interrupt = Fifo0_Message_Pending;
-    CAN_Init(&CAN);
-    filter.ID = 0x0;
-    filter.filter_id = 0;
-    filter.id_type = CAN_ID_Standard;
-    filter.frame_type = CAN_Frame_Data;
-    CAN_Filter_Init(&CAN, &filter);
-    CAN_Start(&CAN);
-    __disable_irq();
-    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
-    __enable_irq();
-}
 
 void Set_TX_Param(int AXIS_ID, int COMMAND_ID, int id_type, int frame_type, int data_length) {
     TX.ID = (AXIS_ID << 5) | COMMAND_ID;
@@ -47,7 +31,7 @@ void Set_Axis_Requested_State(Axis Axis, Axis_State state) {
     TX.data[1] = ptrToFloat[1];
     TX.data[2] = ptrToFloat[2];
     TX.data[3] = ptrToFloat[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Input_Vel(Axis Axis, float vel, float torqueff) {
@@ -64,17 +48,17 @@ void Set_Input_Vel(Axis Axis, float vel, float torqueff) {
     TX.data[5] = ptrTor[1];
     TX.data[6] = ptrTor[2];
     TX.data[7] = ptrTor[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Clear_Errors(Axis Axis) {
     Set_TX_Param(Axis.AXIS_ID, CLEAR_ERRORS, CAN_ID_Standard, CAN_Frame_Data, 0);
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Reboot_ODrive(Axis Axis) {
     Set_TX_Param(Axis.AXIS_ID, REBOOT_ODRIVE, CAN_ID_Standard, CAN_Frame_Data, 0);
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Controller_Modes(Axis Axis, Control_Mode ControlMode, Input_Mode InputMode) {
@@ -93,7 +77,7 @@ void Set_Controller_Modes(Axis Axis, Control_Mode ControlMode, Input_Mode InputM
     TX.data[5] = ptrInput[1];
     TX.data[6] = ptrInput[2];
     TX.data[7] = ptrInput[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Input_Pos(Axis Axis, float Input_Pos, int Vel_FF, int Torque_FF) {
@@ -112,12 +96,12 @@ void Set_Input_Pos(Axis Axis, float Input_Pos, int Vel_FF, int Torque_FF) {
     TX.data[5] = ptrVel[1];
     TX.data[6] = ptrTor[0];
     TX.data[7] = ptrTor[1];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Get_Encoder_Count(Axis Axis) {
     Set_TX_Param(Axis.AXIS_ID, GET_ENCODER_COUNT, CAN_ID_Standard, CAN_Frame_Remote, 0);
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Input_Torque(Axis Axis, float torque) {
@@ -128,17 +112,17 @@ void Set_Input_Torque(Axis Axis, float torque) {
     TX.data[1] = ptrTor[1];
     TX.data[2] = ptrTor[2];
     TX.data[3] = ptrTor[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Get_Bus_Voltage_Current(Axis Axis) {
     Set_TX_Param(Axis.AXIS_ID, GET_BUS_VOLTAGE_CURRENT, CAN_ID_Standard, CAN_Frame_Remote, 0);
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Get_IQ(Axis Axis) {
     Set_TX_Param(Axis.AXIS_ID, GET_IQ, CAN_ID_Standard, CAN_Frame_Remote, 0);
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Position_Gain(Axis Axis, float pos_gain) {
@@ -149,7 +133,7 @@ void Set_Position_Gain(Axis Axis, float pos_gain) {
     TX.data[1] = ptrPos[1];
     TX.data[2] = ptrPos[2];
     TX.data[3] = ptrPos[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Vel_Gains(Axis Axis, float Vel_Gain, float Vel_Int_Gain) {
@@ -166,7 +150,7 @@ void Set_Vel_Gains(Axis Axis, float Vel_Gain, float Vel_Int_Gain) {
     TX.data[5] = ptrVelIntGain[1];
     TX.data[6] = ptrVelIntGain[2];
     TX.data[7] = ptrVelIntGain[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Axis_Node_ID(Axis Axis, uint32_t node_id) {
@@ -177,7 +161,7 @@ void Set_Axis_Node_ID(Axis Axis, uint32_t node_id) {
     TX.data[1] = ptrNodeId[1];
     TX.data[2] = ptrNodeId[2];
     TX.data[3] = ptrNodeId[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 }
 
 void Set_Limits(Axis Axis, float vel_lim, float curr_lim) {
@@ -194,13 +178,13 @@ void Set_Limits(Axis Axis, float vel_lim, float curr_lim) {
     TX.data[5] = ptrCurrLim[1];
     TX.data[6] = ptrCurrLim[2];
     TX.data[7] = ptrCurrLim[3];
-    CAN_Send_Packet(&CAN, &TX);
+    CAN_Send_Packet(&hcan1, &TX);
 
 }
 
 void ODrive_RX_CallBack(Axis *AXIS) {
     int32_t ID = 0;
-    CAN_Get_Packet(&CAN, &RX);
+    CAN_Get_Packet(&hcan1, &RX);
     ID = RX.ID;
     int32_t NODE_ID = (ID >> 5);
     int32_t CMD_ID = (ID & 0x01F);

@@ -5,8 +5,6 @@
 #include "bsp_GPIO.h"
 
 
-
-
 #define Transmit_Mailbox_Empty	CAN_IER_TMEIE
 #define Fifo0_Message_Pending	CAN_IER_FMPIE0
 #define Fifo1_Message_Pending	CAN_IER_FMPIE1
@@ -26,19 +24,6 @@ typedef struct CAN_RX_Typedef
 	int32_t ID;
 }CAN_RX_Typedef;
 
-typedef struct CAN_Filter_TypeDef
-{
-	int filter_id;
-	int enable;
-	int id_type;
-	int frame_type;
-
-
-	int type;
-	int scale;
-	int bank_id;
-	uint32_t ID;
-}CAN_Filter_TypeDef;
 
 typedef struct CAN_TX_Typedef
 {
@@ -50,26 +35,12 @@ typedef struct CAN_TX_Typedef
 	int data[8];
 }CAN_TX_Typedef;
 
-typedef struct CAN_Init_Typedef
-{
-	CAN_TypeDef *CAN_INSTANCE;			//CAN1 OR CAN2
-	int32_t baudrate;
-	int timestamp_enable;
-	int interrupt;
-}CAN_Init_Typedef;
 
+void CAN_Filter_Init(void);
 
+void CAN_Send_Packet(CAN_HandleTypeDef *init, CAN_TX_Typedef *tx);
 
-
-int CAN_Init(CAN_Init_Typedef *init);
-
-int CAN_Filter_Init(CAN_Init_Typedef *init, CAN_Filter_TypeDef *filter);
-
-void CAN_Start(CAN_Init_Typedef *init);
-
-void CAN_Send_Packet(CAN_Init_Typedef *init, CAN_TX_Typedef *tx);
-
-void CAN_Get_Packet(CAN_Init_Typedef *init, CAN_RX_Typedef *rx);
+void CAN_Get_Packet(CAN_HandleTypeDef *init, CAN_RX_Typedef *rx);
 
 
 #endif
