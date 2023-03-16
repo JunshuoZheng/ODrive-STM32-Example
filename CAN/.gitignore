@@ -38,3 +38,9 @@ JLinkSettings.ini
 *.TMP
 EventRecorderStub.scvd
 RTE
+
+#vscode配置
+.vscode
+
+#astyle备份
+*.orig
