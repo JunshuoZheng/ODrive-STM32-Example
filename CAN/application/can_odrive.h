@@ -89,6 +89,11 @@ typedef enum {
 } Input_Mode;
 
 
+
+
+void get_axis_status(axis_t *AXIS, int32_t CMD_ID);
+
+
 /*
  * @function	: CAN_Setup
  * @version		: 1
@@ -430,7 +435,6 @@ void Set_Limits(axis_t Axis, float vel_lim, float curr_lim);
  * 				  to update the required variables in the Axis struct.
  */
 
-void ODrive_RX_CallBack(axis_t *AXIS);
 
 
 

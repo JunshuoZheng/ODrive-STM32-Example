@@ -6,7 +6,25 @@ CAN_RX_Typedef RX;
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 
+axis_t odrive_axis[4]; 
 
+/**
+  * @brief      hal库CAN回调函数,接收电机数据
+  */
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+    int32_t ID = 0;
+    CAN_Get_Packet(&hcan1, &RX);
+    ID = RX.ID;
+    int32_t NODE_ID = (ID >> 5);
+    int32_t CMD_ID = (ID & 0x01F);
+
+		static uint8_t i = 0;
+		i = NODE_ID - CAN_ODRIVE_M1_ID;		//get motor id
+	
+		get_axis_status(&odrive_axis[i], CMD_ID);
+
+}
 
 void Set_TX_Param(int AXIS_ID, int COMMAND_ID, int id_type, int frame_type, int data_length) {
     TX.ID = (AXIS_ID << 5) | COMMAND_ID;
@@ -175,65 +193,59 @@ void Set_Limits(axis_t Axis, float vel_lim, float curr_lim) {
 
 }
 
-void ODrive_RX_CallBack(axis_t *AXIS) {
-    int32_t ID = 0;
-    CAN_Get_Packet(&hcan1, &RX);
-    ID = RX.ID;
-    int32_t NODE_ID = (ID >> 5);
-    int32_t CMD_ID = (ID & 0x01F);
+void get_axis_status(axis_t *AXIS, int32_t CMD_ID)
+{
+	    
+		switch(CMD_ID) {
 
+		case ODRIVE_HEARTBEAT_MESSAGE:
+				AXIS->AXIS_Error = (RX.data[0] | RX.data[1]<<8 | RX.data[2]<<16 | RX.data[3]<<24);
+				AXIS->AXIS_Current_State = RX.data[4];
+				AXIS->Controller_Status = RX.data[5];
+				break;
 
-    if(NODE_ID == AXIS->AXIS_ID) {
+		case ENCODER_ESTIMATES:
+				;
 
-        switch(CMD_ID) {
+				uint32_t *ptrEncPos;
+				ptrEncPos = (uint32_t *)&(AXIS->AXIS_Encoder_Pos);
+				*ptrEncPos = (RX.data[0] + (RX.data[1]<<8) + (RX.data[2]<<16) + (RX.data[3]<<24));
+				uint32_t *ptrEncVel;
+				ptrEncVel = (uint32_t *)&(AXIS->AXIS_Encoder_Vel);
+				*ptrEncVel = (RX.data[4] + (RX.data[5]<<8) + (RX.data[6]<<16) + (RX.data[7]<<24));
+				break;
 
-        case ODRIVE_HEARTBEAT_MESSAGE:
-            AXIS->AXIS_Error = (RX.data[0] | RX.data[1]<<8 | RX.data[2]<<16 | RX.data[3]<<24);
-            AXIS->AXIS_Current_State = RX.data[4];
-            AXIS->Controller_Status = RX.data[5];
-            break;
+		case GET_ENCODER_COUNT:
+				AXIS->AXIS_Encoder_Shadow = (RX.data[0] | RX.data[1]<<8 | RX.data[2]<<16 | RX.data[3]<<24);
+				AXIS->AXIS_Encoder_CPR = (RX.data[4] | RX.data[5]<<8 | RX.data[6]<<16 | RX.data[7]<<24);
+				break;
 
+		case GET_BUS_VOLTAGE_CURRENT:
+				;
 
-        case ENCODER_ESTIMATES:
-            ;
+				uint32_t *ptrBusV;
+				ptrBusV = (uint32_t *)&(AXIS->AXIS_Bus_Voltage);
+				*ptrBusV = (RX.data[0] + (RX.data[1]<<8) + (RX.data[2]<<16) + (RX.data[3]<<24));
+				uint32_t *ptrBusI;
+				ptrBusI = (uint32_t *)&(AXIS->AXIS_Bus_Current);
+				*ptrBusI = (RX.data[4] + (RX.data[5]<<8) + (RX.data[6]<<16) + (RX.data[7]<<24));
+				break;
 
-            uint32_t *ptrEncPos;
-            ptrEncPos = (uint32_t *)&(AXIS->AXIS_Encoder_Pos);
-            *ptrEncPos = (RX.data[0] + (RX.data[1]<<8) + (RX.data[2]<<16) + (RX.data[3]<<24));
-            uint32_t *ptrEncVel;
-            ptrEncVel = (uint32_t *)&(AXIS->AXIS_Encoder_Vel);
-            *ptrEncVel = (RX.data[4] + (RX.data[5]<<8) + (RX.data[6]<<16) + (RX.data[7]<<24));
-            break;
+		case GET_IQ:
+				;
 
-        case GET_ENCODER_COUNT:
-            AXIS->AXIS_Encoder_Shadow = (RX.data[0] | RX.data[1]<<8 | RX.data[2]<<16 | RX.data[3]<<24);
-            AXIS->AXIS_Encoder_CPR = (RX.data[4] | RX.data[5]<<8 | RX.data[6]<<16 | RX.data[7]<<24);
-            break;
+				uint32_t *ptrIqSet;
+				ptrIqSet = (uint32_t *)&(AXIS->AXIS_Iq_Setpoint);
+				*ptrIqSet = (RX.data[0] + (RX.data[1]<<8) + (RX.data[2]<<16) + (RX.data[3]<<24));
+				uint32_t *ptrIqMsr;
+				ptrIqMsr = (uint32_t *)&(AXIS->AXIS_Iq_Measured);
+				*ptrIqMsr = (RX.data[4] + (RX.data[5]<<8) + (RX.data[6]<<16) + (RX.data[7]<<24));
+				break;
 
-        case GET_BUS_VOLTAGE_CURRENT:
-            ;
-
-            uint32_t *ptrBusV;
-            ptrBusV = (uint32_t *)&(AXIS->AXIS_Bus_Voltage);
-            *ptrBusV = (RX.data[0] + (RX.data[1]<<8) + (RX.data[2]<<16) + (RX.data[3]<<24));
-            uint32_t *ptrBusI;
-            ptrBusI = (uint32_t *)&(AXIS->AXIS_Bus_Current);
-            *ptrBusI = (RX.data[4] + (RX.data[5]<<8) + (RX.data[6]<<16) + (RX.data[7]<<24));
-            break;
-
-
-        case GET_IQ:
-            ;
-
-            uint32_t *ptrIqSet;
-            ptrIqSet = (uint32_t *)&(AXIS->AXIS_Iq_Setpoint);
-            *ptrIqSet = (RX.data[0] + (RX.data[1]<<8) + (RX.data[2]<<16) + (RX.data[3]<<24));
-            uint32_t *ptrIqMsr;
-            ptrIqMsr = (uint32_t *)&(AXIS->AXIS_Iq_Measured);
-            *ptrIqMsr = (RX.data[4] + (RX.data[5]<<8) + (RX.data[6]<<16) + (RX.data[7]<<24));
-            break;
-
-
-        }
-    }
+		}
+    
 }
+
+
+
+

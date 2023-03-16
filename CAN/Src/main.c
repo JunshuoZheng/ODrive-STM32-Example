@@ -46,8 +46,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-axis_t odrive_axis[4]; 
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -164,12 +162,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void CAN1_RX0_IRQHandler(void){
-	//Callback function to be placed in Interrupt Handler
-	ODrive_RX_CallBack(&odrive_axis[0]);
-	ODrive_RX_CallBack(&odrive_axis[1]);
-
-}
 /* USER CODE END 4 */
 
 /**
